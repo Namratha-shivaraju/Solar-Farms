@@ -12,13 +12,13 @@
 #     try:
 #         analysisPeriod = int(data.get('analysisPeriod', 0))
 #         production = float(data.get('production', 0.0))
-#         turnKeyCosts = float(data.get('turnKeyCosts', 0.0))
-#         variableCosts = float(data.get('variableCosts', 0.0))
-#         ppa = float(data.get('ppa', 0.0))
+#         capex = float(data.get('capex', 0.0))
+#         opex = float(data.get('opex', 0.0))
+#         ppa_price = float(data.get('ppa_price', 0.0))
 #         upfront = float(data.get('upfront', 0.0))
 
-#         npv = financial_calculations.calculate_npv(analysisPeriod, production, turnKeyCosts, variableCosts, ppa, upfront)
-#         cash_flows = [-turnKeyCosts] + [production * ppa - variableCosts for _ in range(analysisPeriod)]
+#         npv = financial_calculations.calculate_npv(analysisPeriod, production, capex, opex, ppa_price, upfront)
+#         cash_flows = [-capex] + [production * ppa_price - opex for _ in range(analysisPeriod)]
 #         irr = financial_calculations.calculate_irr(cash_flows)
 
 #         print(f"Calculated NPV: {npv}")
@@ -75,13 +75,13 @@
 #     # 从请求数据中提取所有必要的参数，并转换为浮点数
 #     analysisPeriod = data['analysisPeriod']
 #     production = float(data['production'])
-#     turnKeyCosts = float(data['turnKeyCosts'])
-#     variableCosts = float(data['variableCosts'])
-#     ppa = float(data['ppa'])
+#     capex = float(data['capex'])
+#     opex = float(data['opex'])
+#     ppa_price = float(data['ppa_price'])
 #     upfront = float(data['upfront'])
 
 #     # 使用提取的参数调用calculate_npv函数
-#     npv = financial_calculations.calculate_npv(analysisPeriod, production, turnKeyCosts, variableCosts, ppa, upfront)
+#     npv = financial_calculations.calculate_npv(analysisPeriod, production, capex, opex, ppa_price, upfront)
 
 #     # 为了调用calculate_irr，需要构建一个适当的现金流数组
 #     cash_flows = [upfront, production]  # 这需要根据实际情况调整
@@ -123,13 +123,13 @@
 #     try:
 #         analysisPeriod = int(data.get('analysisPeriod', 0))
 #         production = float(data.get('production', 0.0))
-#         turnKeyCosts = float(data.get('turnKeyCosts', 0.0))
-#         variableCosts = float(data.get('variableCosts', 0.0))
-#         ppa = float(data.get('ppa', 0.0))
+#         capex = float(data.get('capex', 0.0))
+#         opex = float(data.get('opex', 0.0))
+#         ppa_price = float(data.get('ppa_price', 0.0))
 #         upfront = float(data.get('upfront', 0.0))
  
-#         npv = financial_calculations.calculate_npv(analysisPeriod, production, turnKeyCosts, variableCosts, ppa, upfront)
-#         cash_flows = [-turnKeyCosts] + [production * ppa - variableCosts for _ in range(analysisPeriod)]
+#         npv = financial_calculations.calculate_npv(analysisPeriod, production, capex, opex, ppa_price, upfront)
+#         cash_flows = [-capex] + [production * ppa_price - opex for _ in range(analysisPeriod)]
 #         irr = financial_calculations.calculate_irr(cash_flows)
  
 #         # 在这里调用绘图函数
@@ -178,13 +178,13 @@ def calculate():
     try:
         analysisPeriod = int(data.get('analysisPeriod', 0))
         production = float(data.get('production', 0.0))
-        turnKeyCosts = float(data.get('turnKeyCosts', 0.0))
-        variableCosts = float(data.get('variableCosts', 0.0))
-        ppa = float(data.get('ppa', 0.0))
+        capex = float(data.get('capex', 0.0))
+        opex = float(data.get('opex', 0.0))
+        ppa_price = float(data.get('ppa_price', 0.0))
         upfront = float(data.get('upfront', 0.0))
 
-        npv = financial_calculations.calculate_npv(analysisPeriod, production, turnKeyCosts, variableCosts, ppa, upfront)
-        cash_flows = [-turnKeyCosts] + [production * ppa - variableCosts for _ in range(analysisPeriod)]
+        npv = financial_calculations.calculate_npv(analysisPeriod, production, capex, opex, ppa_price, upfront)
+        cash_flows = [-capex] + [production * ppa_price - opex for _ in range(analysisPeriod)]
         irr = financial_calculations.calculate_irr(cash_flows)
 
         # Generate and encode plot as base64
