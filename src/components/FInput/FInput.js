@@ -114,26 +114,21 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import './FInput.css';
 
-
-
-
-
-
 function FInput() {
   const initialFormData = {
     analysisPeriod: '',
     currency: '',
     production: '',
-    turnKeyCosts: '',
-    variableCosts: '',
-    ppa: '',
+    capex: '',
+    opex: '',
+    ppa_price: '',
     debtPercent: '',
     repaymentYears: '',
     interestRate: '',
     dcc: '',
     upfront: '',
-    corporateTax: '',
-    depreciationSchedule: '',
+    tax_rate: '',
+    depreciation: '',
     projectReturn: '',
     equityReturn: ''
   };
@@ -145,8 +140,6 @@ function FInput() {
     { period: "Year 3", turnKeyCosts: 0, netCashFlow: 400 }, // Year 3
   ];
   
-
-
   const [formData, setFormData] = useState(initialFormData);
 
   //to show result in non image -- const [results, setResults] = useState({ npv: null, irr: null });
@@ -262,9 +255,6 @@ function FInput() {
   //   });
   // };
 
-
-  
-
   const handleReset = () => {
     setFormData(initialFormData); // Reset form data to initial state
     //uncomment this if image does not work -- setResults({ npv: null, irr: null }); // Reset results
@@ -297,18 +287,18 @@ function FInput() {
             </div>
 
             <div className='form-content'>
-              <label htmlFor="turnKeyCosts" className="variables">Turn key costs</label>
-              <input type="number" placeholder="USD" className="ipvalue" name="turnKeyCosts" id="turnKeyCosts" onChange={handleChange} value={formData.turnKeyCosts}/>
+              <label htmlFor="capex" className="variables">Turn key costs</label>
+              <input type="number" placeholder="USD" className="ipvalue" name="capex" id="capex" onChange={handleChange} value={formData.capex}/>
             </div>
 
             <div className='form-content'>
-              <label htmlFor="variableCosts" className="variables">Variable costs by generation (OPEX)</label>
-              <input type="number" placeholder="USD/MWh" className="ipvalue" name="variableCosts" id="variableCosts" onChange={handleChange} value={formData.variableCosts}/>
+              <label htmlFor="opex" className="variables">Variable costs by generation (OPEX)</label>
+              <input type="number" placeholder="USD/MWh" className="ipvalue" name="opex" id="opex" onChange={handleChange} value={formData.opex}/>
             </div>
 
             <div className='form-content'>
-              <label htmlFor="ppa" className="variables">PPA Prices</label>
-              <input type="number" placeholder="USD/MWh" className="ipvalue" name="ppa" id="ppa" onChange={handleChange} value={formData.ppa}/>
+              <label htmlFor="ppa_price" className="variables">PPA Prices</label>
+              <input type="number" placeholder="USD/MWh" className="ipvalue" name="ppa_price" id="ppa_price" onChange={handleChange} value={formData.ppa_price}/>
             </div>
 
             <div className='form-content'>
@@ -337,13 +327,13 @@ function FInput() {
             </div>
 
             <div className='form-content'>
-              <label htmlFor="corporateTax" className="variables">Corporate Tax</label>
-              <input type="number" placeholder="%" className="ipvalue" name="corporateTax" id="corporateTax" onChange={handleChange} value={formData.corporateTax}/>
+              <label htmlFor="tax_rate" className="variables">Corporate Tax</label>
+              <input type="number" placeholder="%" className="ipvalue" name="tax_rate" id="tax_rate" onChange={handleChange} value={formData.tax_rate}/>
             </div>
 
             <div className='form-content'>
-              <label htmlFor="depreciationSchedule" className="variables">Straight Line Depreciation Schedule</label>
-              <input type="number" placeholder="Years" className="ipvalue" name="depreciationSchedule" id="depreciationSchedule" onChange={handleChange} value={formData.depreciationSchedule}/>
+              <label htmlFor="depreciation" className="variables">Straight Line Depreciation Schedule</label>
+              <input type="number" placeholder="Years" className="ipvalue" name="depreciation" id="depreciation" onChange={handleChange} value={formData.depreciation}/>
             </div>
 
             <div className='form-content'>
@@ -402,8 +392,8 @@ function FInput() {
         {isCalculated ? results.map((result, index) => (
         <div className="info" key={index}>
         <div className="info-inside">
-          <p className='pstyle'>NPV: {result.npv !== null ? `$${result.npv}` : 'Not Calculated'}</p>
-          <p className='pstyle'>IRR: {result.irr !== null ? `${result.irr}%` : 'Not Calculated'}</p>
+          {/* <p className='pstyle'>NPV: {result.npv !== null ? `$${result.npv}` : 'Not Calculated'}</p>
+          <p className='pstyle'>IRR: {result.irr !== null ? `${result.irr}%` : 'Not Calculated'}</p> */}
           {/* {result.plotUrl && <img src={result.plotUrl} alt="Plot" />} */}
         <div className='project_cashflow'>
           <h4>Project Cashflow</h4>
