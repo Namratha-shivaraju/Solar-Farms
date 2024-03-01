@@ -1,0 +1,20 @@
+.navbar {
+    background-color: #424296; /* Dark purple background */
+    padding: 20px 36px; /* Padding around the navbar */
+    display: flex; /* Use flexbox for layout */
+    justify-content: space-between; /* Space out navbar contents */
+    align-items: center; /* Center items vertically */
+  }
+  
+  /* Styles for the container within the navbar */
+  .navbar-container {
+    background-color: #424296; /* Dark purple background */
+    color: #FFFFFF;
+    display: flex;
+    justify-content: space-between;
+    width: 100%; /* Make the container fill the navbar */
+    max-width: 1200px; /* Maximum width of the content, you can adjust this */
+    margin: 0 auto; /* Center the container in the navbar */
+    font-size: 1rem;
+  }
+  

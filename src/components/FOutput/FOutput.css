@@ -1,0 +1,51 @@
+.main-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%; /* Make the container fill the navbar */
+    max-width: 1200px; /* Maximum width of the content, you can adjust this */
+    margin: 0 auto;
+    padding: 10px 0px 10px 0px;
+}
+.report-container {
+    width: 100%;
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.heading {
+    font-size: 1.25rem; /* text-xl */
+    font-weight: 600; /* font-semibold */
+    margin-bottom: 1rem; /* mb-4 */
+}
+
+.info-inside {
+    margin-top: 1rem;
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+
+.info-text {
+    animation: spin 1s linear infinite;
+    border-radius: 9999px;
+    height: 2rem;
+    width: 2rem;
+    border-bottom-width: 2px;
+    border-color: #4299e1;
+}
+@keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+}
+.load {
+    text-align: center;
+    margin-left: 0.75rem;
+    color: #4a5568;
+    font-size: 0.875rem;
+}  
+
