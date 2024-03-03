@@ -116,33 +116,25 @@ import './FInput.css';
 
 function FInput() {
   const initialFormData = {
-    analysisPeriod: '',
+    analysis_period: '',
     currency: '',
     production: '',
     capex: '',
     opex: '',
     ppa_price: '',
-    debtPercent: '',
-    repaymentYears: '',
-    interestRate: '',
-    dcc: '',
-    upfront: '',
+    debt_percent: '',
+    repayment_years: '',
+    interest_rate: '',
     tax_rate: '',
-    depreciation: '',
-    projectReturn: '',
-    equityReturn: ''
+    depreciation_y: '',
+    project_return: '',
+    equity_return: ''
   };
 
-  const transformedCashFlowData = [
-    { period: "Initial", turnKeyCosts: -1000, netCashFlow: 0 }, // Initial investment
-    { period: "Year 1", turnKeyCosts: 0, netCashFlow: 200 }, // Net cash flow for year 1
-    { period: "Year 2", turnKeyCosts: 0, netCashFlow: 300 }, // Year 2
-    { period: "Year 3", turnKeyCosts: 0, netCashFlow: 400 }, // Year 3
-  ];
-  
   const [formData, setFormData] = useState(initialFormData);
 
   //to show result in non image -- const [results, setResults] = useState({ npv: null, irr: null });
+  // years: null, totalRevenue: null, totalOpex: null, taxPaidG: null, principal: null, interest: null, cf_aoe: null, cce: null, ccp: null, npve: null, npvp: null, irre: null, irrp: null
   const [results, setResults] = useState([]); // Store multiple results
   const [isCalculated, setIsCalculated] = useState(false); 
   //image change
@@ -197,14 +189,58 @@ function FInput() {
       if (!response.ok) throw new Error('Network response was not ok.');
 
       const data = await response.json();
-      const newResult = { npv: data.npv, irr: data.irr, plotUrl: 'http://127.0.0.1:5000/plot.png' };
-      setResults(currentResults => [...currentResults, newResult]);
+      // const newResult = {years: data.years, totalRevenue: data.total_revenue, totalOpex: data.total_opex, taxPaidG: data.tax_paid_g, principal: data.principal, 
+      // interest: data.interest, cf_aoe: data.cf_aoe, cce: data.cce, ccp: data.ccp, npve: data.npve, npvp: data.npvp, irre: data.irre, irrp: data.irrp};
+      
+      // const newResult = Object.fromEntries(
+      //   Object.entries(data).map(([key, value]) => [key, value === null ? 0 : isNaN(value) ? null : value])
+      // );
+      const chartData = [];
+      for (let index = 0; index < data.years; index++) {
+        chartData.push({
+          years: index + 1,
+          totalRevenue: data.totalRevenue[index] || 0,
+          totalOpex: data.totalOpex[index] || 0,
+          taxPaidG: data.taxPaidG[index] || 0,
+          principal: data.principal[index] || 0,
+          interest: data.interest[index] || 0,
+          cf_aoe: data.cf_aoe[index] || 0,
+          cce: data.cce[index] || 0,
+          ccp: data.ccp[index] || 0,
+          npve: data.npve[index] || 0,
+          npvp: data.npvp[index] || 0,
+          irre: data.irre[index] || 0,
+          irrp: data.irrp[index] || 0,
+        })
+      }
+      // const years = Array.from({ length: newResult.years }, (_, i) => i + 1);
+      // const chartData = years.map((year, index) => ({
+      //   year: year,
+      //   totalRevenue: newResult.totalRevenue[index],
+      //   // totalOpex: newResult.totalOpex[index],
+      //   // taxPaidG: newResult.taxPaidG[index],
+      //   principal: newResult.principal[index],
+      //   interest: newResult.interest[index],
+      //   cf_aoe: newResult.cf_aoe[index],
+      //   cce: newResult.cce[index],
+      //   ccp: newResult.ccp[index],
+      //   npve: newResult.npve[index],
+      //   npvp: newResult.npvp[index],
+      //   irre: newResult.irre[index],
+      //   irrp: newResult.irrp[index],
+      // }));
+
+      setResults(chartData);
       setIsCalculated(true);
     } catch (error) {
       console.error('There was a problem with your fetch operation:', error);
       alert('Failed to calculate. Please check the console for more details.');
     }
   };
+
+
+
+
 
   const exportPDF = () => {
     // Adjust the selector if needed to target the specific content you want to capture
@@ -269,8 +305,8 @@ function FInput() {
         <form className="content" onSubmit={handleSubmit}>
           
           <div className='form-content'>
-              <label htmlFor="analysisPeriod" className="variables">Analysis Period</label>
-              <input type="number" placeholder="Years" className="ipvalue" name="analysisPeriod" id="analysisPeriod" onChange={handleChange} value={formData.analysisPeriod}/>
+              <label htmlFor="analysis_period" className="variables">Analysis Period</label>
+              <input type="number" placeholder="Years" className="ipvalue" name="analysis_period" id="analysis_period" onChange={handleChange} value={formData.analysis_period}/>
             </div>
 
             <div className='form-content'>
@@ -302,29 +338,29 @@ function FInput() {
             </div>
 
             <div className='form-content'>
-              <label htmlFor="debtPercent" className="variables">Debt Percent</label>
-              <input type="number" placeholder="%" className="ipvalue" name="debtPercent" id="debtPercent" onChange={handleChange} value={formData.debtPercent}/>
+              <label htmlFor="debt_percent" className="variables">Debt Percent</label>
+              <input type="number" placeholder="%" className="ipvalue" name="debt_percent" id="debt_percent" onChange={handleChange} value={formData.debt_percent}/>
             </div>
 
             <div className='form-content'>
-              <label htmlFor="repaymentYears" className="variables">Total number of years to repay debt</label>
-              <input type="number" placeholder="Years" className="ipvalue" name="repaymentYears" id="repaymentYears" onChange={handleChange} value={formData.repaymentYears}/>
+              <label htmlFor="repayment_years" className="variables">Total number of years to repay debt</label>
+              <input type="number" placeholder="Years" className="ipvalue" name="repayment_years" id="repayment_years" onChange={handleChange} value={formData.repayment_years}/>
             </div>
 
             <div className='form-content'>
-              <label htmlFor="interestRate" className="variables">Total interest rate for the debt</label>
-              <input type="number" placeholder="%" className="ipvalue" name="interestRate" id="interestRate" onChange={handleChange} value={formData.interestRate}/>
+              <label htmlFor="interest_rate" className="variables">Total interest rate for the debt</label>
+              <input type="number" placeholder="%" className="ipvalue" name="interest_rate" id="interest_rate" onChange={handleChange} value={formData.interest_rate}/>
             </div>
 
-            <div className='form-content'>
+            {/* <div className='form-content'>
               <label htmlFor="dcc" className="variables">Debt closing costs</label>
               <input type="number" placeholder="USD" className="ipvalue" name="dcc" id="dcc" onChange={handleChange} value={formData.dcc}/>
-            </div>
+            </div> */}
 
-            <div className='form-content'>
+            {/* <div className='form-content'>
               <label htmlFor="upfront" className="variables">Up-front fee</label>
               <input type="number" placeholder="%" className="ipvalue" name="upfront" id="upfront" onChange={handleChange} value={formData.upfront}/>
-            </div>
+            </div> */}
 
             <div className='form-content'>
               <label htmlFor="tax_rate" className="variables">Corporate Tax</label>
@@ -332,18 +368,18 @@ function FInput() {
             </div>
 
             <div className='form-content'>
-              <label htmlFor="depreciation" className="variables">Straight Line Depreciation Schedule</label>
-              <input type="number" placeholder="Years" className="ipvalue" name="depreciation" id="depreciation" onChange={handleChange} value={formData.depreciation}/>
+              <label htmlFor="depreciation_y" className="variables">Straight Line Depreciation Schedule</label>
+              <input type="number" placeholder="Years" className="ipvalue" name="depreciation_y" id="depreciation_y" onChange={handleChange} value={formData.depreciation_y}/>
             </div>
 
             <div className='form-content'>
-              <label htmlFor="projectReturn" className="variables">Expected rate of return for the project</label>
-              <input type="number" placeholder="%" className="ipvalue" name="projectReturn" id="projectReturn" onChange={handleChange} value={formData.projectReturn}/>
+              <label htmlFor="project_return" className="variables">Expected rate of return for the project</label>
+              <input type="number" placeholder="%" className="ipvalue" name="project_return" id="project_return" onChange={handleChange} value={formData.project_return}/>
             </div>
 
             <div className='form-content'>
-              <label htmlFor="equityReturn" className="variables">Expected rate of return for the equity investors</label>
-              <input type="number" placeholder="%" className="ipvalue" name="equityReturn" id="equityReturn" onChange={handleChange} value={formData.equityReturn}/>
+              <label htmlFor="equity_return" className="variables">Expected rate of return for the equity investors</label>
+              <input type="number" placeholder="%" className="ipvalue" name="equity_return" id="equity_return" onChange={handleChange} value={formData.equity_return}/>
             </div>
 
             <div className="form-actions">
@@ -389,8 +425,8 @@ function FInput() {
             <button type="button">Save Session as PDF</button>
           </div>
         )) : <h1 className='load'>Please enter all the fields and calculate</h1>} */}
-        {isCalculated ? results.map((result, index) => (
-        <div className="info" key={index}>
+        {isCalculated ? (
+        <div className="info">
         <div className="info-inside">
           {/* <p className='pstyle'>NPV: {result.npv !== null ? `$${result.npv}` : 'Not Calculated'}</p>
           <p className='pstyle'>IRR: {result.irr !== null ? `${result.irr}%` : 'Not Calculated'}</p> */}
@@ -400,17 +436,20 @@ function FInput() {
           <div className='charts'> 
           <ResponsiveContainer width="100%" height={400}>
           <BarChart
-            data={transformedCashFlowData} // This should be your transformed data array
+            data={results} // This should be your transformed data array
             margin={{
               top: 20, right: 30, left: 20, bottom: 5,
             }}>
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="period" />
+          <XAxis dataKey="years" name='years'/>
           <YAxis />
           <Tooltip />
           <Legend />
-          <Bar dataKey="turnKeyCosts" stackId="a" fill="#8884d8" name="Turn Key Costs" />
-          <Bar dataKey="netCashFlow" stackId="a" fill="#82ca9d" name="Net Cash Flow" />
+          <Bar dataKey="totalRevenue" stackId="a" fill="#AFA1C4" name="Total Revenue" />
+          <Bar dataKey="totalOpex" stackId="a" fill="#D4B4CD" name="Total OPEX" />
+          <Bar dataKey="taxPaidG" stackId="a" fill="#F7D4D2" name="Tax Paid (Geared)" />
+          <Bar dataKey="principal" stackId="a" fill="#D2D6C3" name="Principal" />
+          <Bar dataKey="interest" stackId="a" fill="#A4A8BF" name="Interest" />
           </BarChart>
         </ResponsiveContainer>
         </div>
@@ -420,7 +459,7 @@ function FInput() {
           <div className='charts'>
           <ResponsiveContainer width="100%" height={400}>
             <AreaChart
-            data={transformedCashFlowData} // This should be your transformed data array
+            data={results} // This should be your transformed data array
             margin={{
               top: 10,
               right: 30,
@@ -429,11 +468,13 @@ function FInput() {
             }}
             >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="period" />
+            <XAxis dataKey="years" name='years'/>
             <YAxis />
             <Tooltip />
-            <Area type="monotone" dataKey="turnKeyCosts" stackId="1" stroke="#8884d8" fill="#8884d8" />
-            <Area type="monotone" dataKey="netCashFlow" stackId="1" stroke="#82ca9d" fill="#82ca9d" />
+            <Legend />
+            <Area type="monotone" dataKey="principal" stackId="1" stroke="#D2D6C3" fill="#D2D6C3" name='Principal'/>
+            <Area type="monotone" dataKey="interest" stackId="1" stroke="#A4A8BF" fill="#A4A8BF" name='Interest'/>
+            <Area type="monotone" dataKey="cf_aoe" stackId="1" stroke="#AFA1C4" fill="#AFA1C4" name='Cash flow Available to Equity'/>
             </AreaChart>
           </ResponsiveContainer> 
           </div>
@@ -445,7 +486,7 @@ function FInput() {
             <div className='charts'>
             <ResponsiveContainer width="100%" height={400}>
             <AreaChart
-            data={transformedCashFlowData} // This should be your transformed data array
+            data={results} // This should be your transformed data array
             margin={{
               top: 10,
               right: 30,
@@ -454,10 +495,11 @@ function FInput() {
             }}
             >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="period" />
+            <XAxis dataKey="years" name='years'/>
             <YAxis />
             <Tooltip />
-            <Area type="monotone" dataKey="turnKeyCosts" stackId="1" stroke="#8884d8" fill="#8884d8" />
+            <Legend />
+            <Area type="monotone" dataKey="cce" stackId="1" stroke="#AFA1C4" fill="#AFA1C4" name='Cumulative Cash flow to Equity'/>
             </AreaChart>
             </ResponsiveContainer>
             </div>
@@ -467,7 +509,7 @@ function FInput() {
             <div className='charts'>
             <ResponsiveContainer width="100%" height={400}>
             <AreaChart
-            data={transformedCashFlowData} // This should be your transformed data array
+            data={results} // This should be your transformed data array
             margin={{
               top: 10,
               right: 30,
@@ -476,10 +518,11 @@ function FInput() {
             }}
             >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="period" />
+            <XAxis dataKey="years" name='years'/>
             <YAxis />
             <Tooltip />
-            <Area type="monotone" dataKey="turnKeyCosts" stackId="1" stroke="#8884d8" fill="#8884d8" />
+            <Legend />
+            <Area type="monotone" dataKey="ccp" stackId="1" stroke="#AFA1C4" fill="#AFA1C4" name='Cumulative Cash flow to Project'/>
             </AreaChart>
             </ResponsiveContainer>
             </div>
@@ -494,7 +537,7 @@ function FInput() {
               <LineChart
               width={500}
               height={300}
-              data={transformedCashFlowData}
+              data={results}
               margin={{
                 top: 5,
                 right: 30,
@@ -503,13 +546,12 @@ function FInput() {
               }}
               >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="period" />
+              <XAxis dataKey="years" name='years'/>
               <YAxis />
               <Tooltip />
               <Legend />
               <ReferenceLine y={0} stroke="#000" />
-              <Line type="monotone" dataKey="turnKeyCosts" stroke="#8884d8" activeDot={{ r: 8 }} />
-              <Line type="monotone" dataKey="netCashFlow" stroke="#82ca9d" />
+              <Line type="monotone" dataKey="irre" stroke="#AFA1C4" name='IRR to Equity(%)'/>
               </LineChart>
             </ResponsiveContainer>
             </div>
@@ -521,7 +563,7 @@ function FInput() {
             <BarChart
               width={500}
               height={300}
-              data={transformedCashFlowData}
+              data={results}
               margin={{
               top: 5,
               right: 30,
@@ -530,12 +572,11 @@ function FInput() {
               }}
             >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="period" />
+              <XAxis dataKey="years" name='years'/>
               <YAxis />
               <Tooltip />
               <Legend />
-              <Bar dataKey="turnKeyCosts" fill="#8884d8" activeBar={<Rectangle fill="pink" stroke="blue" />} />
-              <Bar dataKey="netCashFlow" fill="#82ca9d" activeBar={<Rectangle fill="gold" stroke="purple" />} />
+              <Bar dataKey="npve" fill="#AFA1C4" activeBar={<Rectangle fill="pink" stroke="blue" name='NPV to Equity'/>} />
             </BarChart>
           </ResponsiveContainer>
           </div>
@@ -550,7 +591,7 @@ function FInput() {
               <LineChart
               width={500}
               height={300}
-              data={transformedCashFlowData}
+              data={results}
               margin={{
                 top: 5,
                 right: 30,
@@ -559,13 +600,12 @@ function FInput() {
               }}
               >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="period" />
+              <XAxis dataKey="years" name='years'/>
               <YAxis />
               <Tooltip />
               <Legend />
               <ReferenceLine y={0} stroke="#000" />
-              <Line type="monotone" dataKey="turnKeyCosts" stroke="#8884d8" activeDot={{ r: 8 }} />
-              <Line type="monotone" dataKey="netCashFlow" stroke="#82ca9d" />
+              <Line type="monotone" dataKey="irrp" stroke="#AFA1C4" name='IRR to Project(%)'/>
               </LineChart>
             </ResponsiveContainer>
             </div>
@@ -577,7 +617,7 @@ function FInput() {
             <BarChart
               width={500}
               height={300}
-              data={transformedCashFlowData}
+              data={results}
               margin={{
               top: 5,
               right: 30,
@@ -586,12 +626,11 @@ function FInput() {
               }}
             >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="period" />
+              <XAxis dataKey="years" name='years'/>
               <YAxis />
               <Tooltip />
               <Legend />
-              <Bar dataKey="turnKeyCosts" fill="#8884d8" activeBar={<Rectangle fill="pink" stroke="blue" />} />
-              <Bar dataKey="netCashFlow" fill="#82ca9d" activeBar={<Rectangle fill="gold" stroke="purple" />} />
+              <Bar dataKey="npvp" fill="#AFA1C4" activeBar={<Rectangle fill="pink" stroke="blue" name='NPV to Project'/>} />
             </BarChart>
           </ResponsiveContainer>
           </div>
@@ -599,7 +638,7 @@ function FInput() {
         </div>
         </div>
         </div>
-        )) : <h1 className='load'>Please enter all the fields and calculate</h1>}
+        ) : <h1 className='load'>Please enter all the fields and calculate</h1>}
         {!isCalculated ? ' ' : <button type="button" onClick={exportPDF}>Save Session as PDF</button>}
       </div>
     </div>
