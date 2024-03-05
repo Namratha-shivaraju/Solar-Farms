@@ -17,6 +17,7 @@
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
+
 .heading {
     font-size: 1.25rem; /* text-xl */
     font-weight: 600; /* font-semibold */
@@ -54,14 +55,13 @@ input, select{
     padding: 0.5rem; /* p-2 */
     border: 1px solid #e2e8f0; /* border color */
     border-radius: 0.25rem; /* rounded */
-    background-color: #ffffff;
 }
 
 .form-actions {
     display: grid; 
     grid-template-columns: repeat(2, 1fr); 
     gap: 10px;
-    background-color: #ffffff;
+    margin-top: 50px;
 }
 
 button {
@@ -124,6 +124,9 @@ button:hover {
 .pstyle {
     background-color: #ffffff;
 }
+.project_cashflow {
+    background-color: #ffffff;
+}
 
 .project_cashflow h4 {
     background-color: #b0b0f4;
@@ -131,11 +134,12 @@ button:hover {
 
 .charts {
     padding: 20px 20px 20px 20px;
+    background-color: #ffffff;
 }
 
 .single-plot{
     height: 50%;
-    width: 50%;
+    width: 100%;
     object-fit: contain;
 }
 
@@ -160,6 +164,7 @@ img {
     display: inline-block;
     vertical-align: middle;
     padding-top: 10px;
+    background-color: #ffffff;
 }
 
 .right-graph {
@@ -167,6 +172,7 @@ img {
     display: inline-block;
     vertical-align: middle;
     padding-top: 10px;
+    background-color: #ffffff;
 }
 
 .left-graph h3 {
