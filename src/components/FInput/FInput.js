@@ -132,13 +132,8 @@ function FInput() {
   };
 
   const [formData, setFormData] = useState(initialFormData);
-
-  //to show result in non image -- const [results, setResults] = useState({ npv: null, irr: null });
-  // years: null, totalRevenue: null, totalOpex: null, taxPaidG: null, principal: null, interest: null, cf_aoe: null, cce: null, ccp: null, npve: null, npvp: null, irre: null, irrp: null
   const [results, setResults] = useState([]); // Store multiple results
   const [isCalculated, setIsCalculated] = useState(false); 
-  //image change
-  //const [plotUrl, setPlotUrl] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -147,32 +142,6 @@ function FInput() {
       [name]: value
     }));
   };
-
-  //uncomment if image does not work
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault(); // Prevent the default form submit action
-
-  //   try {
-  //     const response = await fetch('http://127.0.0.1:5000/calculate', { // Adjust the URL/port as needed
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify(formData)
-  //     });
-  //   // comment this if image does not work
-  //     if (!response.ok) throw new Error('Network response was not ok.');
-
-  //     const data = await response.json();
-  //     setResults({ npv: data.npv, irr: data.irr });
-  //     setPlotUrl('http://127.0.0.1:5000/plot.png');
-  //     setIsCalculated(true);
-  //   } catch (error) {
-  //     console.error('There was a problem with your fetch operation:', error);
-  //     alert('Failed to calculate. Please check the console for more details.');
-  //   }
-  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -189,12 +158,7 @@ function FInput() {
       if (!response.ok) throw new Error('Network response was not ok.');
 
       const data = await response.json();
-      // const newResult = {years: data.years, totalRevenue: data.total_revenue, totalOpex: data.total_opex, taxPaidG: data.tax_paid_g, principal: data.principal, 
-      // interest: data.interest, cf_aoe: data.cf_aoe, cce: data.cce, ccp: data.ccp, npve: data.npve, npvp: data.npvp, irre: data.irre, irrp: data.irrp};
       
-      // const newResult = Object.fromEntries(
-      //   Object.entries(data).map(([key, value]) => [key, value === null ? 0 : isNaN(value) ? null : value])
-      // );
       const chartData = [];
       for (let index = 0; index < data.years; index++) {
         chartData.push({
@@ -213,24 +177,8 @@ function FInput() {
           irrp: data.irrp[index] || 0,
         })
       }
-      // const years = Array.from({ length: newResult.years }, (_, i) => i + 1);
-      // const chartData = years.map((year, index) => ({
-      //   year: year,
-      //   totalRevenue: newResult.totalRevenue[index],
-      //   // totalOpex: newResult.totalOpex[index],
-      //   // taxPaidG: newResult.taxPaidG[index],
-      //   principal: newResult.principal[index],
-      //   interest: newResult.interest[index],
-      //   cf_aoe: newResult.cf_aoe[index],
-      //   cce: newResult.cce[index],
-      //   ccp: newResult.ccp[index],
-      //   npve: newResult.npve[index],
-      //   npvp: newResult.npvp[index],
-      //   irre: newResult.irre[index],
-      //   irrp: newResult.irrp[index],
-      // }));
-
-      setResults(chartData);
+      //setResults(chartData);
+      setResults(oldResults => [chartData, ...oldResults]);
       setIsCalculated(true);
     } catch (error) {
       console.error('There was a problem with your fetch operation:', error);
@@ -267,29 +215,6 @@ function FInput() {
     });
   };
 
-  // const exportPDF = () => {
-  //   html2canvas(document.querySelector(".report-container")).then(canvas => {
-  //     const imgData = canvas.toDataURL('image/png');
-  //     const canvasWidth = canvas.width;
-  //     const canvasHeight = canvas.height;
-  //     const canvasAspectRatio = canvasWidth / canvasHeight;
-  
-  //     // Set PDF size based on the aspect ratio of the canvas
-  //     const pdfWidth = 210; // A4 width in mm
-  //     const pdfHeight = pdfWidth / canvasAspectRatio;
-  
-  //     // Create a new jsPDF instance with calculated width and height
-  //     const pdf = new jsPDF({
-  //       orientation: canvasWidth > canvasHeight ? "landscape" : "portrait",
-  //       unit: 'mm',
-  //       format: [pdfWidth, pdfHeight]
-  //     });
-  
-  //     // Add the captured image to the PDF
-  //     pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-  //     pdf.save("session-report.pdf");
-  //   });
-  // };
 
   const handleReset = () => {
     setFormData(initialFormData); // Reset form data to initial state
@@ -305,7 +230,7 @@ function FInput() {
         <form className="content" onSubmit={handleSubmit}>
           
           <div className='form-content'>
-              <label htmlFor="analysis_period" className="variables">Analysis Period</label>
+              <label htmlFor="analysis_period" className="variables">Analysis Period (years)</label>
               <input type="number" placeholder="Years" className="ipvalue" name="analysis_period" id="analysis_period" onChange={handleChange} value={formData.analysis_period}/>
             </div>
 
@@ -318,67 +243,57 @@ function FInput() {
             </div>
 
             <div className='form-content'> 
-              <label htmlFor="production" className="variables">Production</label>
+              <label htmlFor="production" className="variables">Amount of Electricity to be produced (per year)</label>
               <input type="number" placeholder="MWh/yr" className="ipvalue" name="production" id='production' onChange={handleChange} value={formData.production}/>
             </div>
 
             <div className='form-content'>
-              <label htmlFor="capex" className="variables">Turn key costs</label>
+              <label htmlFor="capex" className="variables">Upfront Cost to start the microgrid (USD)</label>
               <input type="number" placeholder="USD" className="ipvalue" name="capex" id="capex" onChange={handleChange} value={formData.capex}/>
             </div>
 
             <div className='form-content'>
-              <label htmlFor="opex" className="variables">Variable costs by generation (OPEX)</label>
+              <label htmlFor="opex" className="variables">Cost per Unit of Electricity produced (USD/MWh)</label>
               <input type="number" placeholder="USD/MWh" className="ipvalue" name="opex" id="opex" onChange={handleChange} value={formData.opex}/>
             </div>
 
             <div className='form-content'>
-              <label htmlFor="ppa_price" className="variables">PPA Prices</label>
+              <label htmlFor="ppa_price" className="variables">Electricity Sale Price (USD/MWh)</label>
               <input type="number" placeholder="USD/MWh" className="ipvalue" name="ppa_price" id="ppa_price" onChange={handleChange} value={formData.ppa_price}/>
             </div>
 
             <div className='form-content'>
-              <label htmlFor="debt_percent" className="variables">Debt Percent</label>
+              <label htmlFor="debt_percent" className="variables">Debt Percentage (%)</label>
               <input type="number" placeholder="%" className="ipvalue" name="debt_percent" id="debt_percent" onChange={handleChange} value={formData.debt_percent}/>
             </div>
 
             <div className='form-content'>
-              <label htmlFor="repayment_years" className="variables">Total number of years to repay debt</label>
+              <label htmlFor="repayment_years" className="variables">Total Number of Years to Repay Debt (years)</label>
               <input type="number" placeholder="Years" className="ipvalue" name="repayment_years" id="repayment_years" onChange={handleChange} value={formData.repayment_years}/>
             </div>
 
             <div className='form-content'>
-              <label htmlFor="interest_rate" className="variables">Total interest rate for the debt</label>
+              <label htmlFor="interest_rate" className="variables">Interest Rate for the Debt (%)</label>
               <input type="number" placeholder="%" className="ipvalue" name="interest_rate" id="interest_rate" onChange={handleChange} value={formData.interest_rate}/>
             </div>
 
-            {/* <div className='form-content'>
-              <label htmlFor="dcc" className="variables">Debt closing costs</label>
-              <input type="number" placeholder="USD" className="ipvalue" name="dcc" id="dcc" onChange={handleChange} value={formData.dcc}/>
-            </div> */}
-
-            {/* <div className='form-content'>
-              <label htmlFor="upfront" className="variables">Up-front fee</label>
-              <input type="number" placeholder="%" className="ipvalue" name="upfront" id="upfront" onChange={handleChange} value={formData.upfront}/>
-            </div> */}
-
             <div className='form-content'>
-              <label htmlFor="tax_rate" className="variables">Corporate Tax</label>
+              <label htmlFor="tax_rate" className="variables">Corporate Tax (%)</label>
               <input type="number" placeholder="%" className="ipvalue" name="tax_rate" id="tax_rate" onChange={handleChange} value={formData.tax_rate}/>
             </div>
 
             <div className='form-content'>
-              <label htmlFor="depreciation_y" className="variables">Straight Line Depreciation Schedule</label>
+              <label htmlFor="depreciation_y" className="variables">Asset Depreciation Period (years)</label>
               <input type="number" placeholder="Years" className="ipvalue" name="depreciation_y" id="depreciation_y" onChange={handleChange} value={formData.depreciation_y}/>
             </div>
 
             <div className='form-content'>
-              <label htmlFor="project_return" className="variables">Expected rate of return for the project</label>
+              <label htmlFor="project_return" className="variables">Overall Annual Profitability Rate (%)</label>
               <input type="number" placeholder="%" className="ipvalue" name="project_return" id="project_return" onChange={handleChange} value={formData.project_return}/>
             </div>
 
             <div className='form-content'>
-              <label htmlFor="equity_return" className="variables">Expected rate of return for the equity investors</label>
+              <label htmlFor="equity_return" className="variables">Rate of Return Expected by the Investor (%)</label>
               <input type="number" placeholder="%" className="ipvalue" name="equity_return" id="equity_return" onChange={handleChange} value={formData.equity_return}/>
             </div>
 
@@ -396,47 +311,18 @@ function FInput() {
       </div>
        <div className="report-container">
         <h1 className="heading">Financial Report</h1>
-        {/* <h1 className='load'>{isCalculated ? 'Results' : 'Please enter all the fields'}</h1> */}
-        {/* {isCalculated && (
-          <div className="info">
-            <div className="info-inside">
-              <p>NPV: {results.npv !== null ? `$${results.npv}` : 'Not Calculated'}</p>
-              <p>IRR: {results.irr !== null ? `${results.irr}%` : 'Not Calculated'}</p>
-            </div>
-          </div>
-        )} */}
-        {/* {isCalculated && plotUrl && (
-          <div className="info">
-            <div className="info-inside">
-              <p className='pstyle'>NPV: {results.npv !== null ? `$${results.npv}` : 'Not Calculated'}</p>
-              <p className='pstyle'>IRR: {results.irr !== null ? `${results.irr}%` : 'Not Calculated'}</p>
-              <img src={plotUrl} alt="Plot" />
-            </div>
-          </div>
-        )} */}
-        {/* <button type="button" onClick={exportPDF}>Save Session as PDF</button> */}
-        {/* {isCalculated ? results.map((result, index) => (
-          <div className="info" key={index}>
-            <div className="info-inside">
-              <p className='pstyle'>NPV: {result.npv !== null ? `$${result.npv}` : 'Not Calculated'}</p>
-              <p className='pstyle'>IRR: {result.irr !== null ? `${result.irr}%` : 'Not Calculated'}</p>
-              {result.plotUrl && <img src={result.plotUrl} alt="Plot" />}
-            </div>
-            <button type="button">Save Session as PDF</button>
-          </div>
-        )) : <h1 className='load'>Please enter all the fields and calculate</h1>} */}
-        {isCalculated ? (
+        {isCalculated ? results.map((result, index) =>(
+        <div key={index}>
+        <h2>Result - {index + 1}</h2>
         <div className="info">
         <div className="info-inside">
-          {/* <p className='pstyle'>NPV: {result.npv !== null ? `$${result.npv}` : 'Not Calculated'}</p>
-          <p className='pstyle'>IRR: {result.irr !== null ? `${result.irr}%` : 'Not Calculated'}</p> */}
-          {/* {result.plotUrl && <img src={result.plotUrl} alt="Plot" />} */}
+          
         <div className='project_cashflow'>
           <h4>Project Cashflow</h4>
           <div className='charts'> 
           <ResponsiveContainer width="100%" height={400}>
           <BarChart
-            data={results} // This should be your transformed data array
+            data={result} // This should be your transformed data array
             margin={{
               top: 20, right: 30, left: 20, bottom: 5,
             }}>
@@ -459,12 +345,12 @@ function FInput() {
           <div className='charts'>
           <ResponsiveContainer width="100%" height={400}>
             <AreaChart
-            data={results} // This should be your transformed data array
+            data={result} // This should be your transformed data array
             margin={{
-              top: 10,
+              top: 20,
               right: 30,
-              left: 0,
-              bottom: 0,
+              left: 20,
+              bottom: 5,
             }}
             >
             <CartesianGrid strokeDasharray="3 3" />
@@ -486,12 +372,12 @@ function FInput() {
             <div className='charts'>
             <ResponsiveContainer width="100%" height={400}>
             <AreaChart
-            data={results} // This should be your transformed data array
+            data={result} // This should be your transformed data array
             margin={{
-              top: 10,
+              top: 20,
               right: 30,
-              left: 0,
-              bottom: 0,
+              left: 30,
+              bottom: 5,
             }}
             >
             <CartesianGrid strokeDasharray="3 3" />
@@ -509,12 +395,12 @@ function FInput() {
             <div className='charts'>
             <ResponsiveContainer width="100%" height={400}>
             <AreaChart
-            data={results} // This should be your transformed data array
+            data={result} // This should be your transformed data array
             margin={{
-              top: 10,
+              top: 20,
               right: 30,
-              left: 0,
-              bottom: 0,
+              left: 30,
+              bottom: 5,
             }}
             >
             <CartesianGrid strokeDasharray="3 3" />
@@ -537,12 +423,12 @@ function FInput() {
               <LineChart
               width={500}
               height={300}
-              data={results}
+              data={result}
               margin={{
-                top: 5,
-                right: 30,
-                left: 20,
-                bottom: 5,
+                top: 20,
+              right: 30,
+              left: 30,
+              bottom: 5,
               }}
               >
               <CartesianGrid strokeDasharray="3 3" />
@@ -563,12 +449,12 @@ function FInput() {
             <BarChart
               width={500}
               height={300}
-              data={results}
+              data={result}
               margin={{
-              top: 5,
-              right: 30,
-              left: 20,
-              bottom: 5,
+                top: 20,
+                right: 30,
+                left: 30,
+                bottom: 5,
               }}
             >
               <CartesianGrid strokeDasharray="3 3" />
@@ -591,12 +477,12 @@ function FInput() {
               <LineChart
               width={500}
               height={300}
-              data={results}
+              data={result}
               margin={{
-                top: 5,
-                right: 30,
-                left: 20,
-                bottom: 5,
+                top: 20,
+              right: 30,
+              left: 30,
+              bottom: 5,
               }}
               >
               <CartesianGrid strokeDasharray="3 3" />
@@ -617,12 +503,12 @@ function FInput() {
             <BarChart
               width={500}
               height={300}
-              data={results}
+              data={result}
               margin={{
-              top: 5,
-              right: 30,
-              left: 20,
-              bottom: 5,
+                top: 20,
+                right: 30,
+                left: 30,
+                bottom: 5,
               }}
             >
               <CartesianGrid strokeDasharray="3 3" />
@@ -638,7 +524,8 @@ function FInput() {
         </div>
         </div>
         </div>
-        ) : <h1 className='load'>Please enter all the fields and calculate</h1>}
+        </div>
+        )) : <h1 className='load'>Please enter all the fields and calculate</h1>}
         {!isCalculated ? ' ' : <button type="button" onClick={exportPDF}>Save Session as PDF</button>}
       </div>
     </div>
